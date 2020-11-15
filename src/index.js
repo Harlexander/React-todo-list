@@ -7,21 +7,24 @@ class Head extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      todoList : []
+      todoList : JSON.parse(localStorage.getItem("todos")) || [],
     }
   }
 
   collectData = (event) => {
     event.preventDefault();
-
     let items = event.target.event.value;
-
-    let push = this.state.todoList.concat([items])
-    this.setState({
-      todoList : push
-    })
+    let push;
+    if(items !== ""){
+        push = this.state.todoList.concat([items])
+          this.setState({
+            todoList : push
+          })
+    }else{
+      alert("Please Insert Your Program")
+    }
+    localStorage.setItem("todos", JSON.stringify(push))
   }
-
   render(){
     console.log(this.state.todoList)
    return (
@@ -29,11 +32,12 @@ class Head extends React.Component {
       <div id="myDIV" className={style.header}>
       <h2 style={{margin:"5px"}}>My To Do List</h2>
       <form onSubmit = {this.collectData}>
-      <input type="text" id="event" placeholder="Title..." />
-      <input type="submit" value="Add" className={style.addBtn} />
+      <input type="text" className={style.head} id="event" placeholder="Title..." />
+      <input type="submit" className={style.head} value="Add" className={style.addBtn} />
       </form>
     </div>
-      <Student List = {this.state.todoList}/>
+      <Student List = {this.state.todoList} 
+      state = {this.state.status}/>
     </div>
   
     )
