@@ -7,28 +7,32 @@ class Student extends React.Component{
     constructor(props){
       super(props);
       this.state = {
-        checked : false
+        elementid : [],
+        status : Array(this.props.List.length).fill(false)
       }
     }
 
     remove = (event) => {
-      let id = event.target.parentElement.remove()
-    }
-
-    checkList = (event) => {
-      if (event.target) {
-        let status = this.state.checked
-     this.setState ({
-       checked : !status
-     })
+      const ask = window.confirm("I hope you have done this activity ??")
+      if(ask){
+         event.target.parentElement.remove()
       }
     }
 
+    click = (index) => {
+      const stat = this.state.status.slice()
+      stat[index] = !stat[index]
+      this.setState({
+        status : stat
+      })
+    }
     render(){
-      console.log(this.state.checked)
+      const {status} = this.state
+      console.log(status)
       let listItem = this.props.List.map((list, index) => {
         return(
-          <li key = {index} onClick = {this.checkList} className = {(this.state.checked) ? style.checked : "null"} ><span className={style.close} onClick={this.remove}>x</span> {list}</li>
+          <li key = {index} onClick = {() => {this.click(index)}} className = {this.state.status[index] ? style.checked : null}>
+            <span className={style.close} onClick={this.remove}>x</span> {list}</li>
         )
       });
       return (
@@ -38,7 +42,4 @@ class Student extends React.Component{
       ) 
     }
   }
-    
-
-
 export default Student
