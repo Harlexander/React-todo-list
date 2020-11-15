@@ -7,8 +7,17 @@ class Head extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      todoList : JSON.parse(localStorage.getItem("todos")) || [],
+      todoList : get("todos") || []
     }
+  }
+
+  remove = (event, index) => {
+    const [todos, check]= [this.state.todoList, get("checked")];
+    todos.splice(index, 1)
+    check.splice(index, 1);
+    set("todos", todos)
+    set("checked", check)
+    event.target.parentElement.remove();
   }
 
   collectData = (event) => {
@@ -23,23 +32,41 @@ class Head extends React.Component {
     }else{
       alert("Please Insert Your Program")
     }
-    localStorage.setItem("todos", JSON.stringify(push))
+    set("todos", push)
+    set("checked", Array(this.state.todoList.length + 1).fill(false))
   }
+
+
   render(){
-    console.log(this.state.todoList)
    return (
-    <div>
+    <>
+    <Header onSubmit = {(event) => {this.collectData(event)}}/>
+    <Student List = {this.state.todoList} 
+      state = {this.state.status}
+      onClick = {(event, index) => {this.remove(event, index)}}/>
+    </>
+    )
+  }
+}
+
+const set = (key, value) => {
+  localStorage.setItem(key, JSON.stringify(value))
+}
+
+const get = (key) => {
+  JSON.parse(localStorage.getItem(key))
+}
+
+class Header extends React.Component{
+  render(){
+    return ( 
       <div id="myDIV" className={style.header}>
       <h2 style={{margin:"5px"}}>My To Do List</h2>
-      <form onSubmit = {this.collectData}>
+      <form onSubmit = {(event) => this.props.onSubmit(event)}>
       <input type="text" className={style.head} id="event" placeholder="Title..." />
       <input type="submit" className={style.head} value="Add" className={style.addBtn} />
       </form>
     </div>
-      <Student List = {this.state.todoList} 
-      state = {this.state.status}/>
-    </div>
-  
     )
   }
 }
